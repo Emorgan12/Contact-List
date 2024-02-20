@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 
 namespace Contact_List
 {
@@ -7,7 +8,7 @@ namespace Contact_List
         static void Main(string[] args)
         {
             bool exit = false;
-            string[,] AllContacts = new string[,] { };
+            List<string[]> AllContacts = new List<string[]>();
             
             while (!exit)
             {
@@ -16,29 +17,43 @@ namespace Contact_List
                 if (input == "1") 
                 {
                     int i = 0;
-                    string[] contact = NewContact();
-                    
-                    
-
-                    
+                    string[] aContact = NewContact();
+                    AllContacts.Add(aContact);
+                    Console.WriteLine(AllContacts);
                 }
                 else if (input == "2")
                 {
-                    Console.WriteLine("What is the name and number of the contact you want to update? ");
+                    Console.WriteLine("What is the name of the contact you want to update? ");
                     string toFind = Console.ReadLine();
-                    int found;
-                    foreach (string contact in AllContacts)
+                    int index = 0;
+                    int index2 = 0;
+                    bool found = false;
+                    foreach (string[] contact in AllContacts)
                     {
-                        int index = 0;
-                        if (contact == toFind)
+                        Console.WriteLine(contact);
+                        foreach (string entry in contact)
                         {
-                            found = index;
-                            break;
+                           
+                            if (entry == toFind)
+                            {
+                                
+                                Console.WriteLine("Contact Found");
+                                found = true;
+                                break;
+                            }
+                            else
+                                index2++;
+                            
                         }
-                        else
-                            index++;
-                        Console.WriteLine(index);
+                        //if (found == false)
+                            //index++;
+                        
+                            
+                        
+                        
                     }
+                    //string[] updatedContact = UpdateContact(AllContacts[index][index2], AllContacts[index][index2+1]);
+                    //Console.WriteLine(AllContacts[index][index2]);
                 }
                 else if (input == "3")
                 {
@@ -52,54 +67,56 @@ namespace Contact_List
                 {
                     Console.WriteLine("Invalid input");
                 }
-                    
+                
             }
             
             Console.ReadKey();
         }
         static string[] NewContact()
         {
-            Contact contact = new Contact();
-            ContactName(contact);
-            ContactNumber(contact);
-            static string ContactName(Contact contact)
+            string contactName = "";
+            string contactNumber = "";
+            ContactName(contactName);
+            ContactNumber(contactNumber);
+            static string ContactName(string contactName)
             {
                 Console.WriteLine("What is this contact's name? ");
-                contact.Name = Console.ReadLine();
-                return contact.Name;
+                contactName = Console.ReadLine();
+                return contactName;
             }
-            static string ContactNumber(Contact contact)
+            static string ContactNumber(string contactNumber)
             {
                 Console.WriteLine("What is this contact's phone number? ");
-                contact.phoneNumber = Console.ReadLine();
-                return contact.phoneNumber;
+                contactNumber = Console.ReadLine();
+                return contactNumber;
             }
-            string[] newContact = { contact.Name, contact.phoneNumber };
+            string[] newContact = { contactName, contactNumber };
+            Console.WriteLine(newContact);
             return newContact;
         }
-        static string[] UpdateContact(Contact contact)
+        static string[] UpdateContact(string name, string number)
         {
             Console.WriteLine("Do you want to update the contact name? (Y/N) ");
             string YesNoInput = Console.ReadLine();
             if (YesNoInput == "Y")
-                contact.Name = UpdateName(contact);
+                name = UpdateName(name);
             Console.WriteLine("Do you want to update the contact number? (Y/N) ");
             YesNoInput = Console.ReadLine();
             if (YesNoInput == "Y")
-                contact.phoneNumber = UpdateNumber(contact);
-            static string UpdateName(Contact contact)
+                number = UpdateNumber(number);
+            static string UpdateName(string name)
             {
                 Console.WriteLine("What is the new name of the contact? ");
-                contact.Name = Console.ReadLine();
-                return contact.Name;
+                name = Console.ReadLine();
+                return name;
             }
-            static string UpdateNumber(Contact contact)
+            static string UpdateNumber(string number)
             {
                 Console.WriteLine("What is the new number of the contact? ");
-                contact.phoneNumber = Console.ReadLine();
-                return contact.phoneNumber;
+                number = Console.ReadLine();
+                return number;
             }
-            string[] updatedContact = { contact.Name, contact.phoneNumber };
+            string[] updatedContact = {name,number};
             return updatedContact;
         }
     }   
