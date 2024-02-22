@@ -12,14 +12,13 @@ namespace Contact_List
             
             while (!exit)
             {
-                Console.WriteLine("Create new contact [1], Update a contact[2], Delete a contact [3], or Exit [4]");
+                Console.WriteLine("Create new contact [1], Update a contact[2], Delete a contact [3], Search for a contact[4] or Exit [5]");
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
-                    int i = 0;
                     string[] aContact = NewContact();
                     AllContacts.Add(aContact);
-
+                    Console.WriteLine(string.Format("Contact created with name {0} and phone number {1} ", AllContacts[AllContacts.Count - 1][0], AllContacts[AllContacts.Count - 1][1]));
                 }
                 else if (input == "2")
                 {
@@ -51,7 +50,7 @@ namespace Contact_List
 
 
 
-                    } 
+                    }
                     string[] updatedContact = UpdateContact(AllContacts[index][index2], AllContacts[index][index2 + 1]);
                     string[] ToUpdate = AllContacts[index];
                     AllContacts.Remove(ToUpdate);
@@ -66,7 +65,6 @@ namespace Contact_List
                     bool found = false;
                     foreach (string[] contact in AllContacts)
                     {
-                        Console.WriteLine(contact);
                         foreach (string entry in contact)
                         {
 
@@ -88,8 +86,35 @@ namespace Contact_List
                     string[] ToDelete = AllContacts[index];
                     AllContacts.Remove(ToDelete);
                 }
+                else if (input == "4") 
+                {
+                    Console.WriteLine("What is the name or number of the contact you want to search for? ");
+                    string toFind = Console.ReadLine();
+                    int index = 0;
+                    int index2 = 0;
+                    bool found = false;
+                    foreach (string[] contact in AllContacts)
+                    {
+                        
+                        foreach (string entry in contact)
+                        {
+                            index2 = 0;
+                            if (entry == toFind)
+                            {
 
-                else if (input == "4")
+                                Console.WriteLine("Contact Found");
+                                found = true;
+                                if (index2 == 0)
+                                break;
+                            }
+                            else
+                                index2++;
+
+                        }
+                        if (found == false)
+                            index++;
+                    }
+                else if (input == "5")
                 {
                     exit = true;
                 }
@@ -140,5 +165,7 @@ namespace Contact_List
             string[] updatedContact = new string[] {name,number};
             return updatedContact;
         }
+        
+        
     }   
 }
