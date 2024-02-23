@@ -114,6 +114,19 @@ namespace Contact_List
                         if (found == false)
                             index++;
                     }
+                    try
+                    {
+                        Console.WriteLine(string.Format("This contact has the name {0} and number {1}", AllContacts[index][0], AllContacts[index][1]))
+
+
+                    }
+                    catch (global::System.Exception)
+                    {
+                        Console.WriteLine("Contact not found")
+
+                        
+                    }
+                    
                 else if (input == "5")
                 {
                     exit = true;
