@@ -35,46 +35,19 @@ namespace Contact_List
                     if (ToDelete == null)
                         Console.WriteLine("No contact was deleted");
                     else
+                    {
                         AllContacts.Remove(ToDelete);
+                        Console.WriteLine("Contact deleted successfully");
+                    }
+
                 }
                 else if (input == "4")
                 {
-                    Console.WriteLine("What is the name or number of the contact you want to search for? ");
-                    string toFind = Console.ReadLine();
-                    int index = 0;
-                    int index2 = 0;
-                    bool found = false;
-                    foreach (string[] contact in AllContacts)
-                    {
-
-                        foreach (string entry in contact)
-                        {
-                            index2 = 0;
-                            if (entry == toFind)
-                            {
-
-                                Console.WriteLine("Contact Found");
-                                found = true;
-                                if (index2 == 0)
-                                    break;
-                            }
-                            else
-                                index2++;
-
-                        }
-                        if (found == false)
-                            index++;
-                    }
-                    try
-                    {
-                        Console.WriteLine(string.Format("This contact has the name {0} and number {1}", AllContacts[index][0], AllContacts[index][1]));
-
-
-                    }
-                    catch (global::System.Exception)
-                    {
-                        Console.WriteLine("Contact not found");
-                    }
+                    string[] foundContact = SearchContact(AllContacts);
+                    if (foundContact == null)
+                        Console.WriteLine("Contact was not found");
+                    else
+                        Console.WriteLine(string.Format("Contact found with name: {0} and number: {1}", foundContact[0], foundContact[1]));
                 }
 
                 else if (input == "5")
@@ -86,25 +59,25 @@ namespace Contact_List
                     Console.WriteLine("Invalid input");
                 }
 
-                }
-
-                Console.ReadKey();
             }
-            static string[] NewContact()
+
+            Console.ReadKey();
+        }
+        static string[] NewContact()
+        {
+            bool created = false;
+            while (!created)
             {
-                bool created = false;
-                while (!created)
-                {
-                    string contactName = "";
-                    string contactNumber = "";
-                    Console.WriteLine("What is this contact's name? ");
-                    contactName = Console.ReadLine();
-                    Console.WriteLine("What is this contact's phone number? ");
-                    contactNumber = Console.ReadLine();
-                    Console.WriteLine(string.Format("Name: {0}, Phone Number: {1}, is this correct? (Y/N)", contactName, contactNumber));
-                    string input = Console.ReadLine();
-                    input = input.ToUpper();
-                bool invalidInput = true;  
+                string contactName = "";
+                string contactNumber = "";
+                Console.WriteLine("What is this contact's name? ");
+                contactName = Console.ReadLine();
+                Console.WriteLine("What is this contact's phone number? ");
+                contactNumber = Console.ReadLine();
+                Console.WriteLine(string.Format("Name: {0}, Phone Number: {1}, is this correct? (Y/N)", contactName, contactNumber));
+                string input = Console.ReadLine();
+                input = input.ToUpper();
+                bool invalidInput = true;
                 while (invalidInput == true)
                 {
                     if (input == "Y")
@@ -126,19 +99,19 @@ namespace Contact_List
                         input = Console.ReadLine();
                         input = input.ToUpper();
                     }
-                        
-                }
-                    
-
 
                 }
-                return null;
+
+
+
             }
+            return null;
+        }
 
         static string[] UpdateContact(List<string[]> contactList)
         {
             static string[] FindContactU(List<string[]> contactList) {
-            bool found = false;
+                bool found = false;
                 while (!found)
                 {
                     Console.WriteLine("What is the name of the contact you want to update? ");
@@ -178,8 +151,8 @@ namespace Contact_List
                         Console.WriteLine("Contact not found");
                 }
                 return null;
-        }
-            
+            }
+
             string[] toUpdate = FindContactU(contactList);
             string name = toUpdate[0];
             string number = toUpdate[1];
@@ -187,12 +160,12 @@ namespace Contact_List
             int realIndex = int.Parse(index);
             bool invalidInput = true;
             while (invalidInput == true)
-            { 
+            {
                 Console.WriteLine("Do you want to update the contact name? (Y/N) ");
                 string input = Console.ReadLine();
                 input = input.ToUpper();
-            
-            
+
+
                 if (input == "Y")
                 {
                     name = UpdateName(name);
@@ -224,103 +197,103 @@ namespace Contact_List
                     Console.WriteLine("Invalid input");
                 }
             }
-            
+
             static string UpdateName(string name)
-                {
+            {
                 bool updated = false;
-                while (!updated) 
+                while (!updated)
                 {
                     bool emptyInput = true;
-                    while (emptyInput) 
+                    while (emptyInput)
                     {
                         Console.WriteLine("What is the new name of the contact? ");
                         name = Console.ReadLine();
-                            if (name == string.Empty)
-                            {
-                                Console.WriteLine("Name cannot be empty");
-                            }
-                            else
-                            {
-                                bool invalidInput = true;
-                                while (invalidInput)
-                                {
-                                    Console.WriteLine(string.Format("This contact will be named {0}, is this correct? (Y/N)", name));
-                                    string input = Console.ReadLine();
-                                    input = input.ToUpper();
-                                    if (input == "Y")
-                                    {
-                                        updated = true;
-                                        invalidInput = false;
-                                        return name;
-                                    }
-                                    else if (input == "N")
-                                        invalidInput = false;
-                                    else
-                                    {
-                                        Console.WriteLine("Invalid input");
-                                        
-                                    }
-                                }
-
-                            }
-                        }
-                    
-                    }
-                return null;
-                }
-                static string UpdateNumber(string number)
-                {
-                    bool updated = false;
-                    while (!updated)
-                    {
-                        bool emptyInput = true;
-                        while (emptyInput)
+                        if (name == string.Empty)
                         {
-                            Console.WriteLine("What is the new number of the contact? ");
-                            number = Console.ReadLine();
-                            if (number == string.Empty)
-                            {
-                                Console.WriteLine("Number cannot be empty");
-                            }
-                            else
-                            {
-                                bool invalidInput = true;
-                                while (invalidInput)
-                                {
-                                    Console.WriteLine(string.Format("This contact's number will be {0}, is this correct? (Y/N)", number));
-                                    string input = Console.ReadLine();
-                                    input = input.ToUpper();
-                                    if (input == "Y")
-                                    {
-                                        updated = true;
-                                        invalidInput = false;
-                                        return number;
-                                    }
-                                    else if (input == "N")
-                                        invalidInput = false;
-                                    else
-                                    {
-                                        Console.WriteLine("Invalid input");
-
-                                    }
-                                }
-
-                            }
+                            Console.WriteLine("Name cannot be empty");
                         }
+                        else
+                        {
+                            bool invalidInput = true;
+                            while (invalidInput)
+                            {
+                                Console.WriteLine(string.Format("This contact will be named {0}, is this correct? (Y/N)", name));
+                                string input = Console.ReadLine();
+                                input = input.ToUpper();
+                                if (input == "Y")
+                                {
+                                    updated = true;
+                                    invalidInput = false;
+                                    return name;
+                                }
+                                else if (input == "N")
+                                    invalidInput = false;
+                                else
+                                {
+                                    Console.WriteLine("Invalid input");
 
+                                }
+                            }
+
+                        }
                     }
-                    return null;
+
+                }
+                return null;
             }
-                Console.WriteLine(string.Format("This contact now has the name: {0} and number {1}", name, number));
-                string sIndex = realIndex.ToString();
-                string[] updatedContact = new string[] {name, number, sIndex};
-                return updatedContact;
+            static string UpdateNumber(string number)
+            {
+                bool updated = false;
+                while (!updated)
+                {
+                    bool emptyInput = true;
+                    while (emptyInput)
+                    {
+                        Console.WriteLine("What is the new number of the contact? ");
+                        number = Console.ReadLine();
+                        if (number == string.Empty)
+                        {
+                            Console.WriteLine("Number cannot be empty");
+                        }
+                        else
+                        {
+                            bool invalidInput = true;
+                            while (invalidInput)
+                            {
+                                Console.WriteLine(string.Format("This contact's number will be {0}, is this correct? (Y/N)", number));
+                                string input = Console.ReadLine();
+                                input = input.ToUpper();
+                                if (input == "Y")
+                                {
+                                    updated = true;
+                                    invalidInput = false;
+                                    return number;
+                                }
+                                else if (input == "N")
+                                    invalidInput = false;
+                                else
+                                {
+                                    Console.WriteLine("Invalid input");
+
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+                return null;
             }
+            Console.WriteLine(string.Format("This contact now has the name: {0} and number {1}", name, number));
+            string sIndex = realIndex.ToString();
+            string[] updatedContact = new string[] { name, number, sIndex };
+            return updatedContact;
+        }
         static string[] DeleteContact(List<string[]> ContactList)
         {
             static string[] FindContactD(List<string[]> contactList)
             {
-                
+
                 bool found = false;
                 while (!found)
                 {
@@ -365,7 +338,7 @@ namespace Contact_List
             string[] toDelete = FindContactD(ContactList);
             string index = toDelete[2];
             int realIndex = int.Parse(index);
-            
+
             bool invalidInput = true;
             while (invalidInput)
             {
@@ -374,14 +347,14 @@ namespace Contact_List
                 input = input.ToUpper();
                 if (input == "Y")
                 {
-                    
+
                     invalidInput = false;
                     string[] ToDelete = new string[] { ContactList[realIndex][0], ContactList[realIndex][1] };
                     return ToDelete;
                 }
                 else if (input == "N")
                     invalidInput = false;
-                    
+
                 else
                 {
                     Console.WriteLine("Invalid input");
@@ -389,9 +362,57 @@ namespace Contact_List
                 }
             }
             return null;
-            
-        }
 
         }
+        static string[] SearchContact(List<string[]> contactList)
+            {
+                bool found = false;
+                
+                    Console.WriteLine("What is the name of the contact you want to search for? ");
+                    string toFind = Console.ReadLine();
+                    int index = 0;
+                    int index2 = 0;
+                    foreach (string[] contact in contactList)
+                    {
+                        foreach (string entry in contact)
+                        {
+
+                            if (entry == toFind)
+                            {
+
+                                Console.WriteLine("Contact Found");
+                                found = true;
+                                string name = contactList[index][0];
+                                string number = contactList[index][1];
+                                string[] Found = new string[] { name, number};
+                                return Found;
+
+
+                            }
+                            else
+                                index2++;
+
+                        }
+                        if (!found)
+                            index++;
+
+
+
+
+                    }
+                    
+                
+                return null;
+            }
         }
+
+    }
+    
+            
+    
+    
+    
+        
+        
+        
     
