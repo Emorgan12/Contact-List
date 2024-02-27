@@ -12,7 +12,7 @@ namespace Contact_List
 
             while (!exit)
             {
-                Console.WriteLine("Create new contact [1], Update a contact[2], Delete a contact [3], Search for a contact[4] or Exit [5]");
+                Console.WriteLine("Create new contact [1], Update a contact[2], Delete a contact [3], Search for a contact[4], See all contacts[5] or Exit [6]");
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -49,8 +49,11 @@ namespace Contact_List
                     else
                         Console.WriteLine(string.Format("Contact found with name: {0} and number: {1}", foundContact[0], foundContact[1]));
                 }
-
                 else if (input == "5")
+                {
+                    OutputAllContacts(AllContacts);
+                }
+                else if (input == "6")
                 {
                     exit = true;
                 }
@@ -70,10 +73,23 @@ namespace Contact_List
             {
                 string contactName = "";
                 string contactNumber = "";
+                long ignoreMe = 0;
                 Console.WriteLine("What is this contact's name? ");
                 contactName = Console.ReadLine();
-                Console.WriteLine("What is this contact's phone number? ");
-                contactNumber = Console.ReadLine();
+                bool invalidLength = true;
+                while (invalidLength) 
+                {
+                    Console.WriteLine("What is this contact's phone number? ");
+                    contactNumber = Console.ReadLine();
+                    bool isDigit = long.TryParse(contactNumber, out ignoreMe);
+                    if (isDigit == false)
+                        Console.WriteLine("Phone number must be numerical");
+                    else if (contactNumber.Length != 11)
+                        Console.WriteLine("Invalid phone number, must be 11 digits long");
+                    else
+                        invalidLength = false;
+                    
+                }
                 Console.WriteLine(string.Format("Name: {0}, Phone Number: {1}, is this correct? (Y/N)", contactName, contactNumber));
                 string input = Console.ReadLine();
                 input = input.ToUpper();
@@ -110,7 +126,8 @@ namespace Contact_List
 
         static string[] UpdateContact(List<string[]> contactList)
         {
-            static string[] FindContactU(List<string[]> contactList) {
+            static string[] FindContactU(List<string[]> contactList)
+            {
                 bool found = false;
                 while (!found)
                 {
@@ -365,54 +382,56 @@ namespace Contact_List
 
         }
         static string[] SearchContact(List<string[]> contactList)
+        {
+            bool found = false;
+
+            Console.WriteLine("What is the name of the contact you want to search for? ");
+            string toFind = Console.ReadLine();
+            int index = 0;
+            int index2 = 0;
+            foreach (string[] contact in contactList)
             {
-                bool found = false;
-                
-                    Console.WriteLine("What is the name of the contact you want to search for? ");
-                    string toFind = Console.ReadLine();
-                    int index = 0;
-                    int index2 = 0;
-                    foreach (string[] contact in contactList)
+                foreach (string entry in contact)
+                {
+
+                    if (entry == toFind)
                     {
-                        foreach (string entry in contact)
-                        {
-
-                            if (entry == toFind)
-                            {
-
-                                Console.WriteLine("Contact Found");
-                                found = true;
-                                string name = contactList[index][0];
-                                string number = contactList[index][1];
-                                string[] Found = new string[] { name, number};
-                                return Found;
-
-
-                            }
-                            else
-                                index2++;
-
-                        }
-                        if (!found)
-                            index++;
-
-
+                        found = true;
+                        string name = contactList[index][0];
+                        string number = contactList[index][1];
+                        string[] Found = new string[] { name, number };
+                        return Found;
 
 
                     }
-                    
-                
-                return null;
+                    else
+                        index2++;
+
+                }
+                if (!found)
+                    index++;
+
+
+
+
+            }
+
+
+            return null;
+        }
+        static void OutputAllContacts(List<string[]> contactList)
+        {
+            foreach (string[] contact in contactList)
+            {
+                Console.WriteLine(string.Format("Name: {0}", contact[0]));
+                Console.WriteLine(string.Format("Number: {0}", contact[1]));
+                Console.WriteLine();
+
             }
         }
-
     }
-    
-            
-    
-    
-    
+}
         
         
-        
+
     
