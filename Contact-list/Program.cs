@@ -36,7 +36,8 @@ namespace Contact_List
                         Console.WriteLine("No contact was deleted");
                     else
                     {
-                        AllContacts.Remove(ToDelete);
+                        int index = int.Parse(ToDelete[0]);
+                        AllContacts.Remove(AllContacts[index]);
                         Console.WriteLine("Contact deleted successfully");
                     }
 
@@ -77,18 +78,43 @@ namespace Contact_List
                 Console.WriteLine("What is this contact's name? ");
                 contactName = Console.ReadLine();
                 bool invalidLength = true;
-                while (invalidLength) 
+                bool moreNumbers= true;
+                while (invalidLength || moreNumbers) 
                 {
                     Console.WriteLine("What is this contact's phone number? ");
                     contactNumber = Console.ReadLine();
                     bool isDigit = long.TryParse(contactNumber, out ignoreMe);
                     if (isDigit == false)
+                    {
                         Console.WriteLine("Phone number must be numerical");
+                        break;
+                    }
+                        
                     else if (contactNumber.Length != 11)
+                    {
                         Console.WriteLine("Invalid phone number, must be 11 digits long");
+                        break;
+                    }
                     else
                         invalidLength = false;
-                    
+                    Console.WriteLine("Add another number to this contact? (Y/N) ");
+                    string YNinput = Console.ReadLine();
+                    YNinput = YNinput.ToUpper();
+                    if (YNinput == "Y")
+                    {
+                        moreNumbers = true;
+
+                    }
+                    else if (YNinput == "N")
+                    {
+                        moreNumbers = false;
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input");
+                        
+                    }
                 }
                 Console.WriteLine(string.Format("Name: {0}, Phone Number: {1}, is this correct? (Y/N)", contactName, contactNumber));
                 string input = Console.ReadLine();
@@ -131,7 +157,7 @@ namespace Contact_List
                 bool found = false;
                 while (!found)
                 {
-                    Console.WriteLine("What is the name of the contact you want to update? ");
+                    Console.WriteLine("What is the name or number of the contact you want to update? ");
                     string toFind = Console.ReadLine();
                     int index = 0;
                     int index2 = 0;
@@ -314,7 +340,7 @@ namespace Contact_List
                 bool found = false;
                 while (!found)
                 {
-                    Console.WriteLine("What is the name of the contact you want to delete? ");
+                    Console.WriteLine("What is the name or number of the contact you want to delete? ");
                     string toFind = Console.ReadLine();
                     int index = 0;
                     int index2 = 0;
@@ -366,7 +392,8 @@ namespace Contact_List
                 {
 
                     invalidInput = false;
-                    string[] ToDelete = new string[] { ContactList[realIndex][0], ContactList[realIndex][1] };
+                    string sRealIndex = realIndex.ToString();
+                    string[] ToDelete = new string[] { sRealIndex };
                     return ToDelete;
                 }
                 else if (input == "N")
@@ -378,14 +405,14 @@ namespace Contact_List
 
                 }
             }
-            return null;
+            return toDelete;
 
         }
         static string[] SearchContact(List<string[]> contactList)
         {
             bool found = false;
 
-            Console.WriteLine("What is the name of the contact you want to search for? ");
+            Console.WriteLine("What is the name or number of the contact you want to search for? ");
             string toFind = Console.ReadLine();
             int index = 0;
             int index2 = 0;
