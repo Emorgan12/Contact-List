@@ -97,24 +97,6 @@ namespace Contact_List
                     }
                     else
                         invalidLength = false;
-                    Console.WriteLine("Add another number to this contact? (Y/N) ");
-                    string YNinput = Console.ReadLine();
-                    YNinput = YNinput.ToUpper();
-                    if (YNinput == "Y")
-                    {
-                        moreNumbers = true;
-
-                    }
-                    else if (YNinput == "N")
-                    {
-                        moreNumbers = false;
-                        
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input");
-                        
-                    }
                 }
                 Console.WriteLine(string.Format("Name: {0}, Phone Number: {1}, is this correct? (Y/N)", contactName, contactNumber));
                 string input = Console.ReadLine();
