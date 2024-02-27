@@ -32,8 +32,10 @@ namespace Contact_List
                 else if (input == "3")
                 {
                     string[] ToDelete = DeleteContact(AllContacts);
-
-                    AllContacts.Remove(ToDelete);
+                    if (ToDelete == null)
+                        Console.WriteLine("No contact was deleted");
+                    else
+                        AllContacts.Remove(ToDelete);
                 }
                 else if (input == "4")
                 {
@@ -135,7 +137,7 @@ namespace Contact_List
 
         static string[] UpdateContact(List<string[]> contactList)
         {
-            static string[] FindContact(List<string[]> contactList) {
+            static string[] FindContactU(List<string[]> contactList) {
             bool found = false;
                 while (!found)
                 {
@@ -178,7 +180,7 @@ namespace Contact_List
                 return null;
         }
             
-            string[] toUpdate = FindContact(contactList);
+            string[] toUpdate = FindContactU(contactList);
             string name = toUpdate[0];
             string number = toUpdate[1];
             string index = toUpdate[2];
@@ -309,40 +311,85 @@ namespace Contact_List
                     }
                     return null;
             }
-               
+                Console.WriteLine(string.Format("This contact now has the name: {0} and number {1}", name, number));
                 string sIndex = realIndex.ToString();
                 string[] updatedContact = new string[] {name, number, sIndex};
                 return updatedContact;
             }
         static string[] DeleteContact(List<string[]> ContactList)
         {
-            Console.WriteLine("What is the name of the contact you want to delete? ");
-            string toFind = Console.ReadLine();
-            int index = 0;
-            int index2 = 0;
-            bool found = false;
-            foreach (string[] contact in ContactList)
+            static string[] FindContactD(List<string[]> contactList)
             {
-                foreach (string entry in contact)
+                
+                bool found = false;
+                while (!found)
                 {
-
-                    if (entry == toFind)
+                    Console.WriteLine("What is the name of the contact you want to delete? ");
+                    string toFind = Console.ReadLine();
+                    int index = 0;
+                    int index2 = 0;
+                    foreach (string[] contact in contactList)
                     {
+                        foreach (string entry in contact)
+                        {
 
-                        Console.WriteLine("Contact Found... Deleting....");
-                        found = true;
-                        break;
+                            if (entry == toFind)
+                            {
+
+                                Console.WriteLine("Contact Found");
+                                found = true;
+                                string name = contactList[index][0];
+                                string number = contactList[index][1];
+                                string sIndex = index.ToString();
+                                string[] toDelete = new string[] { name, number, sIndex };
+                                return toDelete;
+
+
+                            }
+                            else
+                                index2++;
+
+                        }
+                        if (!found)
+                            index++;
+
+
+
+
                     }
-                    else
-                        index2++;
+                    if (!found)
+                        Console.WriteLine("Contact not found");
+                }
+                return null;
+            }
+            string[] toDelete = FindContactD(ContactList);
+            string index = toDelete[2];
+            int realIndex = int.Parse(index);
+            
+            bool invalidInput = true;
+            while (invalidInput)
+            {
+                Console.WriteLine(string.Format("Contact with name: {0} and number: {1} will be deleted, are you sure?(Y/N)", ContactList[realIndex][0], ContactList[realIndex][1]));
+                string input = Console.ReadLine();
+                input = input.ToUpper();
+                if (input == "Y")
+                {
+                    
+                    invalidInput = false;
+                    string[] ToDelete = new string[] { ContactList[realIndex][0], ContactList[realIndex][1] };
+                    return ToDelete;
+                }
+                else if (input == "N")
+                    invalidInput = false;
+                    
+                else
+                {
+                    Console.WriteLine("Invalid input");
 
                 }
-                if (found == false)
-                    index++;
-
             }
-            string[] ToDelete = new string[] { ContactList[index][0], ContactList[index][1]};
-            return ToDelete;
+            return null;
+            
         }
 
         }
