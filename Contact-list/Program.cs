@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿using System.ComponentModel;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 
 namespace Contact_List
@@ -8,7 +10,7 @@ namespace Contact_List
         static void Main(string[] args)
         {
             bool exit = false;
-            List<string[]> AllContacts = new List<string[]>();
+            List<List<string>> AllContacts = new List<List<string>>();
 
             while (!exit)
             {
@@ -16,22 +18,21 @@ namespace Contact_List
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
-                    string[] aContact = NewContact();
+                    List<string> aContact = NewContact();
                     AllContacts.Add(aContact);
                     Console.WriteLine(string.Format("Contact created with name {0} and phone number {1} ", AllContacts[AllContacts.Count - 1][0], AllContacts[AllContacts.Count - 1][1]));
                 }
                 else if (input == "2")
                 {
-                    string[] updatedContact = UpdateContact(AllContacts);
-                    int index = int.Parse(updatedContact[2]);
-                    string[] ToUpdate = AllContacts[index];
+                    List<string> updatedContact = UpdateContact(AllContacts);
+                    int index = int.Parse(updatedContact.Last());
+                    List<string> ToUpdate = AllContacts[index];
                     AllContacts.Remove(ToUpdate);
-                    updatedContact = new string[] { updatedContact[0], updatedContact[1] };
                     AllContacts.Add(updatedContact);
                 }
                 else if (input == "3")
                 {
-                    string[] ToDelete = DeleteContact(AllContacts);
+                    List<string> ToDelete = DeleteContact(AllContacts);
                     if (ToDelete == null)
                         Console.WriteLine("No contact was deleted");
                     else
@@ -44,7 +45,7 @@ namespace Contact_List
                 }
                 else if (input == "4")
                 {
-                    string[] foundContact = SearchContact(AllContacts);
+                    List<string> foundContact = SearchContact(AllContacts);
                     if (foundContact == null)
                         Console.WriteLine("Contact was not found");
                     else
@@ -67,7 +68,7 @@ namespace Contact_List
 
             Console.ReadKey();
         }
-        static string[] NewContact()
+        static List<string> NewContact()
         {
             bool created = false;
             while (!created)
@@ -78,8 +79,7 @@ namespace Contact_List
                 Console.WriteLine("What is this contact's name? ");
                 contactName = Console.ReadLine();
                 bool invalidLength = true;
-                bool moreNumbers= true;
-                while (invalidLength || moreNumbers) 
+                while (invalidLength) 
                 {
                     Console.WriteLine("What is this contact's phone number? ");
                     contactNumber = Console.ReadLine();
@@ -106,7 +106,7 @@ namespace Contact_List
                 {
                     if (input == "Y")
                     {
-                        string[] newContact = new string[] { contactName, contactNumber };
+                        List<string> newContact = new List<string> { contactName, contactNumber };
                         created = true;
                         invalidInput = false;
                         return newContact;
@@ -132,9 +132,9 @@ namespace Contact_List
             return null;
         }
 
-        static string[] UpdateContact(List<string[]> contactList)
+        static List<string> UpdateContact(List<List<string>> contactList)
         {
-            static string[] FindContactU(List<string[]> contactList)
+            static List<string> FindContactU(List<List<string>> contactList)
             {
                 bool found = false;
                 while (!found)
@@ -143,7 +143,7 @@ namespace Contact_List
                     string toFind = Console.ReadLine();
                     int index = 0;
                     int index2 = 0;
-                    foreach (string[] contact in contactList)
+                    foreach (List<string> contact in contactList)
                     {
                         foreach (string entry in contact)
                         {
@@ -156,7 +156,7 @@ namespace Contact_List
                                 string name = contactList[index][0];
                                 string number = contactList[index][1];
                                 string sIndex = index.ToString();
-                                string[] toUpdate = new string[] { name, number, sIndex };
+                                List<string> toUpdate = new List<string> {name, number, sIndex };
                                 return toUpdate;
 
 
@@ -178,7 +178,7 @@ namespace Contact_List
                 return null;
             }
 
-            string[] toUpdate = FindContactU(contactList);
+            List<string> toUpdate = FindContactU(contactList);
             string name = toUpdate[0];
             string number = toUpdate[1];
             string index = toUpdate[2];
@@ -221,6 +221,41 @@ namespace Contact_List
                 {
                     Console.WriteLine("Invalid input");
                 }
+            }
+            invalidInput = true;
+            while (invalidInput == true)
+            {
+                int runs = 0;
+                Console.WriteLine("Do you want to add additional information? (Y/N) ");
+                string input = Console.ReadLine();
+                input = input.ToUpper();
+                if (input == "Y")
+                {
+                    
+                    List<string> addToContact = AddInformation(toUpdate);
+                    string info = addToContact[0];
+                    string content = addToContact[1];
+                    toUpdate.Add(info);
+                    toUpdate.Add(content);
+                    invalidInput = false;
+                }
+                else if (input == "N")
+                    invalidInput = false;
+                else
+                {
+                    Console.WriteLine("Invalid input");
+                }
+            }
+            static List<string> AddInformation(List<string> contact)
+            {
+                Console.WriteLine("What do you want to add? ");
+                string info = Console.ReadLine();
+                Console.WriteLine(string.Format("What is your contact's {0}? ", info));
+                string content = Console.ReadLine();
+                List<string> newInfo = new List<string> {info, content };
+
+                return newInfo;
+
             }
 
             static string UpdateName(string name)
@@ -305,18 +340,22 @@ namespace Contact_List
 
                         }
                     }
-
+                    
                 }
+               
                 return null;
             }
             Console.WriteLine(string.Format("This contact now has the name: {0} and number {1}", name, number));
             string sIndex = realIndex.ToString();
-            string[] updatedContact = new string[] { name, number, sIndex };
-            return updatedContact;
+            toUpdate.Add(name);
+            toUpdate.Add(number);
+            toUpdate.Add(sIndex);
+            Console.WriteLine(toUpdate.Last());
+            return toUpdate;
         }
-        static string[] DeleteContact(List<string[]> ContactList)
+        static List<string> DeleteContact(List<List<string>> ContactList)
         {
-            static string[] FindContactD(List<string[]> contactList)
+            static List<string> FindContactD(List<List<string>> contactList)
             {
 
                 bool found = false;
@@ -326,7 +365,7 @@ namespace Contact_List
                     string toFind = Console.ReadLine();
                     int index = 0;
                     int index2 = 0;
-                    foreach (string[] contact in contactList)
+                    foreach (List<string> contact in contactList)
                     {
                         foreach (string entry in contact)
                         {
@@ -339,7 +378,7 @@ namespace Contact_List
                                 string name = contactList[index][0];
                                 string number = contactList[index][1];
                                 string sIndex = index.ToString();
-                                string[] toDelete = new string[] { name, number, sIndex };
+                                List<string> toDelete = new List<string> { name, number, sIndex };
                                 return toDelete;
 
 
@@ -360,7 +399,7 @@ namespace Contact_List
                 }
                 return null;
             }
-            string[] toDelete = FindContactD(ContactList);
+            List<string> toDelete = FindContactD(ContactList);
             string index = toDelete[2];
             int realIndex = int.Parse(index);
 
@@ -375,7 +414,7 @@ namespace Contact_List
 
                     invalidInput = false;
                     string sRealIndex = realIndex.ToString();
-                    string[] ToDelete = new string[] { sRealIndex };
+                    List<string> ToDelete = new List<string> { sRealIndex };
                     return ToDelete;
                 }
                 else if (input == "N")
@@ -390,7 +429,7 @@ namespace Contact_List
             return toDelete;
 
         }
-        static string[] SearchContact(List<string[]> contactList)
+        static List<string> SearchContact(List<List<string>> contactList)
         {
             bool found = false;
 
@@ -398,7 +437,7 @@ namespace Contact_List
             string toFind = Console.ReadLine();
             int index = 0;
             int index2 = 0;
-            foreach (string[] contact in contactList)
+            foreach (List<string> contact in contactList)
             {
                 foreach (string entry in contact)
                 {
@@ -408,7 +447,7 @@ namespace Contact_List
                         found = true;
                         string name = contactList[index][0];
                         string number = contactList[index][1];
-                        string[] Found = new string[] { name, number };
+                        List<string> Found = new List<string> { name, number };
                         return Found;
 
 
@@ -428,13 +467,14 @@ namespace Contact_List
 
             return null;
         }
-        static void OutputAllContacts(List<string[]> contactList)
+        static void OutputAllContacts(List<List<string>> contactList)
         {
-            foreach (string[] contact in contactList)
+            foreach (List<string> contact in contactList)
             {
-                Console.WriteLine(string.Format("Name: {0}", contact[0]));
-                Console.WriteLine(string.Format("Number: {0}", contact[1]));
-                Console.WriteLine();
+                foreach (string entry in contact)
+                {
+                    Console.WriteLine(entry);
+                }
 
             }
         }
