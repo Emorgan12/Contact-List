@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -26,8 +27,8 @@ namespace Contact_List
                 {
                     List<string> updatedContact = UpdateContact(AllContacts);
                     int index = int.Parse(updatedContact.Last());
-                    List<string> ToUpdate = AllContacts[index];
-                    AllContacts.Remove(ToUpdate);
+                    AllContacts.RemoveAt(index);
+                    updatedContact.RemoveAt(updatedContact.Count-1);
                     AllContacts.Add(updatedContact);
                 }
                 else if (input == "3")
@@ -179,6 +180,8 @@ namespace Contact_List
             }
 
             List<string> toUpdate = FindContactU(contactList);
+            List<string> updatedContact = new List<string>();
+            List<string> newInfo = new List<string>();
             string name = toUpdate[0];
             string number = toUpdate[1];
             string index = toUpdate[2];
@@ -231,12 +234,7 @@ namespace Contact_List
                 input = input.ToUpper();
                 if (input == "Y")
                 {
-                    
-                    List<string> addToContact = AddInformation(toUpdate);
-                    string info = addToContact[0];
-                    string content = addToContact[1];
-                    toUpdate.Add(info);
-                    toUpdate.Add(content);
+                    newInfo = AddInformation(toUpdate);
                     invalidInput = false;
                 }
                 else if (input == "N")
@@ -248,14 +246,47 @@ namespace Contact_List
             }
             static List<string> AddInformation(List<string> contact)
             {
-                Console.WriteLine("What do you want to add? ");
-                string info = Console.ReadLine();
-                Console.WriteLine(string.Format("What is your contact's {0}? ", info));
-                string content = Console.ReadLine();
-                List<string> newInfo = new List<string> {info, content };
+                bool updated = false;
+                while (!updated)
+                {
+                    bool emptyInput = true;
+                    while (emptyInput)
+                    {
+                        Console.WriteLine("What do you want to add? ");
+                        string info = Console.ReadLine();
+                        Console.WriteLine(string.Format("What is your contact's {0}? ", info));
+                        string content = Console.ReadLine();
+                        if (info == string.Empty || content == string.Empty)
+                        {
+                            Console.WriteLine("Info or content cannot be empty");
+                        }
+                        else
+                        {
+                            bool invalidInput = true;
+                            while (invalidInput)
+                            {
+                                Console.WriteLine(string.Format("This contact will have a {0} {1}, is this correct? (Y/N)", info, content));
+                                string input = Console.ReadLine();
+                                input = input.ToUpper();
+                                if (input == "Y")
+                                {
+                                    updated = true;
+                                    invalidInput = false;
+                                    List<string> newInfo = new List<string> { info, content };
+                                    return newInfo;
+                                }
+                                else if (input == "N")
+                                    invalidInput = false;
+                                else
+                                {
+                                    Console.WriteLine("Invalid input");
 
-                return newInfo;
-
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
             }
 
             static string UpdateName(string name)
@@ -347,11 +378,19 @@ namespace Contact_List
             }
             Console.WriteLine(string.Format("This contact now has the name: {0} and number {1}", name, number));
             string sIndex = realIndex.ToString();
-            toUpdate.Add(name);
-            toUpdate.Add(number);
-            toUpdate.Add(sIndex);
-            Console.WriteLine(toUpdate.Last());
-            return toUpdate;
+            updatedContact.Add(name);
+            updatedContact.Add(number);
+            try
+            {
+                updatedContact.Add(newInfo[0]);
+                updatedContact.Add(newInfo[1]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("No additional information added");
+            }
+            updatedContact.Add(sIndex);
+            return updatedContact;
         }
         static List<string> DeleteContact(List<List<string>> ContactList)
         {
